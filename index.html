@@ -177,7 +177,29 @@
             background-color: #f5c200;
             color: #000000;
         }
+/* Aumentar o tamanho do card e adicionar mais espaçamento */
+form, .disciplinas-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    padding: 30px; /* Aumentar o espaçamento interno */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    max-width: 800px; /* Aumentar o tamanho do card */
+    width: 100%;
+    box-sizing: border-box;
+}
 
+.disciplinas {
+    width: 100%;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 30px; /* Aumentar o espaçamento interno do card de disciplinas */
+    margin-top: 20px; /* Aumentar o espaçamento entre os cards */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
         /* Responsividade */
         @media (max-width: 600px) {
             form, .disciplinas-container {
