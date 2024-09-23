@@ -50,6 +50,15 @@
             margin-left: 20px;
         }
 
+        .theme-toggle {
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+            margin-right: 20px; /* Ajustando a margem para combinar com o logotipo */
+        }
+
         .form-section {
             display: none;
         }
@@ -65,9 +74,9 @@
             background-color: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin: 20px;
-            max-width: 500px;
+            max-width: 600px; /* Tamanho semelhante ao Google Forms */
             width: 100%;
             box-sizing: border-box;
         }
@@ -112,9 +121,8 @@
             padding: 20px;
             margin: 20px 0;
             width: 100%;
-            max-width: 500px;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            max-width: 600px; /* Tamanho semelhante ao Google Forms */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .disciplinas {
@@ -123,8 +131,7 @@
             border-radius: 10px;
             padding: 20px;
             margin-top: 15px;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .disciplinas h2 {
@@ -140,12 +147,6 @@
             align-items: center;
         }
 
-        /* Hover Effect nos Cards */
-        .disciplinas:hover {
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
-            transform: translateY(-5px);
-        }
-
         /* Modo noturno */
         .dark-mode {
             background-color: #1e1e1e;
@@ -159,7 +160,7 @@
         .dark-mode form, .dark-mode .disciplinas-container, .dark-mode .disciplinas {
             background-color: #2e2e2e;
             color: #ffffff;
-            box-shadow: 0 8px 15px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
         }
 
         .dark-mode h1, .dark-mode h2 {
