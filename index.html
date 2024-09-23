@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Inicial</title>
+    <title>Formulário de Escolhas</title>
 
     <!-- Favicon -->
     <link rel="icon" href="favicon.png" type="image/png">
@@ -12,7 +12,6 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400&display=swap');
 
-        /* Global Styles */
         body {
             font-family: 'Ubuntu', sans-serif;
             font-weight: 400;
@@ -50,31 +49,14 @@
             max-height: 40px;
         }
 
-        /* Estilo do botão de modo escuro */
-        .theme-toggle {
-            background-color: transparent;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: white;
-            transition: transform 0.3s ease;
-            margin-right: 10px;
+        .form-section {
+            display: none;
         }
 
-        .theme-toggle:hover {
-            transform: scale(1.2);
+        .form-active {
+            display: block;
         }
 
-        /* Estilo do título principal */
-        h1 {
-            margin-top: 30px;
-            font-weight: 700;
-            font-size: 2.2em;
-            text-align: center;
-            letter-spacing: 1px;
-        }
-
-        /* Formulário */
         form {
             display: flex;
             flex-direction: column;
@@ -96,13 +78,29 @@
             align-items: center;
         }
 
-        form label input {
-            margin-right: 10px;
-            width: 18px;
-            height: 18px;
+        form input[type="text"],
+        form input[type="email"] {
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1em;
         }
 
-        /* Cards de Disciplinas */
+        form button {
+            padding: 10px 20px;
+            background-color: #3b5998;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #314a86;
+        }
+
         .disciplinas {
             display: flex;
             flex-direction: column;
@@ -128,48 +126,10 @@
             margin: 10px 0;
         }
 
-        .disciplinas label input {
-            margin-right: 10px;
-            width: 18px;
-            height: 18px;
-        }
-
         /* Hover Effect nos Cards */
         .disciplinas:hover {
             box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
             transform: translateY(-5px);
-        }
-
-        /* Estilos para Dark Mode */
-        .dark-mode {
-            background-color: #1e1e1e;
-            color: #ffffff;
-        }
-
-        .dark-mode h1, .dark-mode h2 {
-            color: #ffffff;
-        }
-
-        .dark-mode form {
-            background-color: #2e2e2e;
-            box-shadow: 0 8px 15px rgba(255, 255, 255, 0.1);
-        }
-
-        .dark-mode .disciplinas {
-            background-color: #2e2e2e;
-            border-color: #555;
-            box-shadow: 0 8px 15px rgba(255, 255, 255, 0.1);
-        }
-
-        .dark-mode .theme-toggle {
-            color: #f5c200;
-        }
-
-        /* Responsividade */
-        @media (max-width: 600px) {
-            form, .disciplinas {
-                max-width: 100%;
-            }
         }
     </style>
     <!-- Fim do CSS -->
@@ -180,55 +140,85 @@
     <!-- Início do HTML -->
     <header>
         <div class="left-header">
-            <!-- Logo, conforme original -->
             <a href="/index.html">
                 <img src="Logotipo.png" alt="Logotipo">
             </a>
         </div>
-        <div class="right-header">
-            <button id="darkModeToggle" class="theme-toggle">🌙</button>
-        </div>
     </header>
 
-    <h1>Escolha sua área de conhecimento</h1>
+    <h1>Formulário de Escolhas</h1>
 
-    <!-- Formulário para seleção de áreas de conhecimento -->
-    <form id="formAreas">
-        <label>
-            <input type="checkbox" name="area" value="Fisioterapia" onclick="toggleDisciplinas('fisioterapia')"> Fisioterapia
-        </label>
-        <label>
-            <input type="checkbox" name="area" value="Enfermagem" onclick="toggleDisciplinas('enfermagem')"> Enfermagem
-        </label>
-        <label>
-            <input type="checkbox" name="area" value="Farmácia" onclick="toggleDisciplinas('farmacia')"> Farmácia
-        </label>
-    </form>
+    <!-- Seção de Dados do Professor -->
+    <section id="section1" class="form-section form-active">
+        <form id="formDados">
+            <label>Nome Completo</label>
+            <input type="text" id="nome" required placeholder="Digite seu nome completo">
 
-    <!-- Disciplinas de Fisioterapia -->
-    <div id="fisioterapia-disciplinas" class="disciplinas" style="display:none;">
-        <h2>Disciplinas de Fisioterapia</h2>
-        <label><input type="checkbox" name="fisioterapia-disciplinas" value="Fisiologia"> Fisiologia</label>
-        <label><input type="checkbox" name="fisioterapia-disciplinas" value="Biomecânica"> Biomecânica</label>
-    </div>
+            <label>Matrícula</label>
+            <input type="text" id="matricula" required placeholder="Digite sua matrícula">
 
-    <!-- Disciplinas de Enfermagem -->
-    <div id="enfermagem-disciplinas" class="disciplinas" style="display:none;">
-        <h2>Disciplinas de Enfermagem</h2>
-        <label><input type="checkbox" name="enfermagem-disciplinas" value="Anatomia"> Anatomia</label>
-        <label><input type="checkbox" name="enfermagem-disciplinas" value="Enfermagem Geral"> Enfermagem Geral</label>
-    </div>
+            <label>E-mail</label>
+            <input type="email" id="email" required placeholder="Digite seu e-mail">
 
-    <!-- Disciplinas de Farmácia -->
-    <div id="farmacia-disciplinas" class="disciplinas" style="display:none;">
-        <h2>Disciplinas de Farmácia</h2>
-        <label><input type="checkbox" name="farmacia-disciplinas" value="Química Farmacêutica"> Química Farmacêutica</label>
-        <label><input type="checkbox" name="farmacia-disciplinas" value="Farmacologia"> Farmacologia</label>
-    </div>
+            <button type="button" onclick="avancar()">Avançar</button>
+        </form>
+    </section>
+
+    <!-- Seção de Escolha de Áreas e Disciplinas -->
+    <section id="section2" class="form-section">
+        <form id="formAreas">
+            <label>
+                <input type="checkbox" name="area" value="Fisioterapia" onclick="toggleDisciplinas('fisioterapia')"> Fisioterapia
+            </label>
+            <label>
+                <input type="checkbox" name="area" value="Enfermagem" onclick="toggleDisciplinas('enfermagem')"> Enfermagem
+            </label>
+            <label>
+                <input type="checkbox" name="area" value="Farmácia" onclick="toggleDisciplinas('farmacia')"> Farmácia
+            </label>
+
+            <!-- Disciplinas de Fisioterapia -->
+            <div id="fisioterapia-disciplinas" class="disciplinas" style="display:none;">
+                <h2>Disciplinas de Fisioterapia</h2>
+                <label><input type="checkbox" name="fisioterapia-disciplinas" value="Fisiologia"> Fisiologia</label>
+                <label><input type="checkbox" name="fisioterapia-disciplinas" value="Biomecânica"> Biomecânica</label>
+            </div>
+
+            <!-- Disciplinas de Enfermagem -->
+            <div id="enfermagem-disciplinas" class="disciplinas" style="display:none;">
+                <h2>Disciplinas de Enfermagem</h2>
+                <label><input type="checkbox" name="enfermagem-disciplinas" value="Anatomia"> Anatomia</label>
+                <label><input type="checkbox" name="enfermagem-disciplinas" value="Enfermagem Geral"> Enfermagem Geral</label>
+            </div>
+
+            <!-- Disciplinas de Farmácia -->
+            <div id="farmacia-disciplinas" class="disciplinas" style="display:none;">
+                <h2>Disciplinas de Farmácia</h2>
+                <label><input type="checkbox" name="farmacia-disciplinas" value="Química Farmacêutica"> Química Farmacêutica</label>
+                <label><input type="checkbox" name="farmacia-disciplinas" value="Farmacologia"> Farmacologia</label>
+            </div>
+
+            <button type="button" onclick="enviarEscolhas()">Enviar escolhas</button>
+        </form>
+    </section>
     <!-- Fim do HTML -->
 
     <!-- Início do JavaScript -->
     <script>
+        // Função para avançar para a escolha de disciplinas
+        function avancar() {
+            var nome = document.getElementById('nome').value;
+            var matricula = document.getElementById('matricula').value;
+            var email = document.getElementById('email').value;
+
+            if (nome && matricula && email) {
+                document.getElementById('section1').classList.remove('form-active');
+                document.getElementById('section2').classList.add('form-active');
+            } else {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+            }
+        }
+
         // Função para mostrar ou esconder disciplinas com base na área selecionada
         function toggleDisciplinas(area) {
             var element = document.getElementById(area + '-disciplinas');
@@ -239,16 +229,32 @@
             }
         }
 
-        // Função para alternar o modo escuro e claro
-        function toggleDarkMode() {
-            const isDarkMode = document.body.classList.toggle("dark-mode");
-            document.getElementById('darkModeToggle').textContent = isDarkMode ? "☀️" : "🌙";
-        }
+        // Função para enviar as escolhas
+        function enviarEscolhas() {
+            var nome = document.getElementById('nome').value;
+            var matricula = document.getElementById('matricula').value;
+            var email = document.getElementById('email').value;
 
-        // Carregar a preferência de modo escuro
-        window.onload = function() {
-            document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
-        };
+            var areasSelecionadas = [];
+            var disciplinasSelecionadas = [];
+
+            document.querySelectorAll('#formAreas input[type="checkbox"]:checked').forEach((input) => {
+                if (input.name.includes('area')) {
+                    areasSelecionadas.push(input.value);
+                } else {
+                    disciplinasSelecionadas.push(input.value);
+                }
+            });
+
+            console.log('Nome:', nome);
+            console.log('Matrícula:', matricula);
+            console.log('E-mail:', email);
+            console.log('Áreas Selecionadas:', areasSelecionadas);
+            console.log('Disciplinas Selecionadas:', disciplinasSelecionadas);
+
+            // Aqui você pode fazer o envio para um servidor ou Google Sheets
+            alert('Suas escolhas foram enviadas!');
+        }
     </script>
     <!-- Fim do JavaScript -->
 
