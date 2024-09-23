@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Inicial</title>
+
+    <!-- Início do CSS -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400&display=swap');
+
+        /* Global Styles */
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            font-weight: 400;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            color: #333;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        h1, h2 {
+            font-family: 'Ubuntu', sans-serif;
+            font-weight: 600;
+            color: #3b5998;
+        }
+
+        header {
+            background-color: #004070;
+            color: #ffffff;
+            width: 100%;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        header img {
+            max-height: 40px;
+        }
+
+        /* Estilo do botão de modo escuro */
+        .theme-toggle {
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.3s ease;
+            margin-right: 10px;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.2);
+        }
+
+        /* Estilo do título principal */
+        h1 {
+            margin-top: 30px;
+            font-weight: 700;
+            font-size: 2.2em;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        /* Formulário */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            max-width: 500px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        form label {
+            font-size: 1.1em;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        form label input {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Cards de Disciplinas */
+        .disciplinas {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .disciplinas h2 {
+            margin-top: 0;
+            font-size: 1.5em;
+            color: #004070;
+        }
+
+        .disciplinas label {
+            font-size: 1.1em;
+            margin: 10px 0;
+        }
+
+        .disciplinas label input {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Hover Effect nos Cards */
+        .disciplinas:hover {
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+        }
+
+        /* Estilos para Dark Mode */
+        .dark-mode {
+            background-color: #1e1e1e;
+            color: #ffffff;
+        }
+
+        .dark-mode h1, .dark-mode h2 {
+            color: #ffffff;
+        }
+
+        .dark-mode form {
+            background-color: #2e2e2e;
+            box-shadow: 0 8px 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .dark-mode .disciplinas {
+            background-color: #2e2e2e;
+            border-color: #555;
+            box-shadow: 0 8px 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .dark-mode .theme-toggle {
+            color: #f5c200;
+        }
+
+        /* Responsividade */
+        @media (max-width: 600px) {
+            form, .disciplinas {
+                max-width: 100%;
+            }
+        }
+    </style>
+    <!-- Fim do CSS -->
+
+</head>
+<body>
+
+    <!-- Início do HTML -->
+    <header>
+        <div class="left-header">
+            <img src="/assets/img/Logotipo.png" alt="Logotipo">
+        </div>
+        <div class="right-header">
+            <button id="darkModeToggle" class="theme-toggle">🌙</button>
+        </div>
+    </header>
+
+    <h1>Escolha sua área de conhecimento</h1>
+
+    <!-- Formulário para seleção de áreas de conhecimento -->
+    <form id="formAreas">
+        <label>
+            <input type="checkbox" name="area" value="Fisioterapia" onclick="toggleDisciplinas('fisioterapia')"> Fisioterapia
+        </label>
+        <label>
+            <input type="checkbox" name="area" value="Enfermagem" onclick="toggleDisciplinas('enfermagem')"> Enfermagem
+        </label>
+        <label>
+            <input type="checkbox" name="area" value="Farmácia" onclick="toggleDisciplinas('farmacia')"> Farmácia
+        </label>
+    </form>
+
+    <!-- Disciplinas de Fisioterapia -->
+    <div id="fisioterapia-disciplinas" class="disciplinas" style="display:none;">
+        <h2>Disciplinas de Fisioterapia</h2>
+        <label><input type="checkbox" name="fisioterapia-disciplinas" value="Fisiologia"> Fisiologia</label>
+        <label><input type="checkbox" name="fisioterapia-disciplinas" value="Biomecânica"> Biomecânica</label>
+    </div>
+
+    <!-- Disciplinas de Enfermagem -->
+    <div id="enfermagem-disciplinas" class="disciplinas" style="display:none;">
+        <h2>Disciplinas de Enfermagem</h2>
+        <label><input type="checkbox" name="enfermagem-disciplinas" value="Anatomia"> Anatomia</label>
+        <label><input type="checkbox" name="enfermagem-disciplinas" value="Enfermagem Geral"> Enfermagem Geral</label>
+    </div>
+
+    <!-- Disciplinas de Farmácia -->
+    <div id="farmacia-disciplinas" class="disciplinas" style="display:none;">
+        <h2>Disciplinas de Farmácia</h2>
+        <label><input type="checkbox" name="farmacia-disciplinas" value="Química Farmacêutica"> Química Farmacêutica</label>
+        <label><input type="checkbox" name="farmacia-disciplinas" value="Farmacologia"> Farmacologia</label>
+    </div>
+    <!-- Fim do HTML -->
+
+    <!-- Início do JavaScript -->
+    <script>
+        // Função para mostrar ou esconder disciplinas com base na área selecionada
+        function toggleDisciplinas(area) {
+            var element = document.getElementById(area + '-disciplinas');
+            if (element.style.display === 'none') {
+                element.style.display = 'block';
+            } else {
+                element.style.display = 'none';
+            }
+        }
+
+        // Função para alternar o modo escuro e claro
+        function toggleDarkMode() {
+            const isDarkMode = document.body.classList.toggle("dark-mode");
+            document.getElementById('darkModeToggle').textContent = isDarkMode ? "☀️" : "🌙";
+        }
+
+        // Carregar a preferência de modo escuro
+        window.onload = function() {
+            document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
+        };
+    </script>
+    <!-- Fim do JavaScript -->
+
+</body>
+</html>
