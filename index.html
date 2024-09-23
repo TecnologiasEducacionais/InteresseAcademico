@@ -47,6 +47,7 @@
 
         header img {
             max-height: 40px;
+            margin-left: 20px;
         }
 
         .form-section {
@@ -60,7 +61,7 @@
         form {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: center;
             background-color: white;
             padding: 20px;
             border-radius: 10px;
@@ -75,6 +76,7 @@
             font-size: 1.1em;
             margin: 10px 0;
             display: flex;
+            width: 100%;
             align-items: center;
         }
 
@@ -101,16 +103,26 @@
             background-color: #314a86;
         }
 
-        .disciplinas {
+        .disciplinas-container {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: center;
             background-color: #fff;
             border-radius: 10px;
             padding: 20px;
             margin: 20px 0;
             width: 100%;
             max-width: 500px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .disciplinas {
+            width: 100%;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
@@ -124,12 +136,52 @@
         .disciplinas label {
             font-size: 1.1em;
             margin: 10px 0;
+            display: flex;
+            align-items: center;
         }
 
         /* Hover Effect nos Cards */
         .disciplinas:hover {
             box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
             transform: translateY(-5px);
+        }
+
+        /* Modo noturno */
+        .dark-mode {
+            background-color: #1e1e1e;
+            color: #ffffff;
+        }
+
+        .dark-mode header {
+            background-color: #333333;
+        }
+
+        .dark-mode form, .dark-mode .disciplinas-container, .dark-mode .disciplinas {
+            background-color: #2e2e2e;
+            color: #ffffff;
+            box-shadow: 0 8px 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .dark-mode h1, .dark-mode h2 {
+            color: #ffffff;
+        }
+
+        .dark-mode form input[type="text"], .dark-mode form input[type="email"] {
+            background-color: #444444;
+            color: #ffffff;
+            border: 1px solid #666666;
+        }
+
+        .dark-mode form button {
+            background-color: #f5c200;
+            color: #000000;
+        }
+
+        /* Responsividade */
+        @media (max-width: 600px) {
+            form, .disciplinas-container {
+                max-width: 100%;
+            }
         }
     </style>
     <!-- Fim do CSS -->
@@ -144,6 +196,7 @@
                 <img src="Logotipo.png" alt="Logotipo">
             </a>
         </div>
+        <button id="darkModeToggle" class="theme-toggle">🌙</button>
     </header>
 
     <h1>Formulário de Escolhas</h1>
@@ -166,7 +219,7 @@
 
     <!-- Seção de Escolha de Áreas e Disciplinas -->
     <section id="section2" class="form-section">
-        <form id="formAreas">
+        <form id="formAreas" class="disciplinas-container">
             <label>
                 <input type="checkbox" name="area" value="Fisioterapia" onclick="toggleDisciplinas('fisioterapia')"> Fisioterapia
             </label>
@@ -198,7 +251,7 @@
                 <label><input type="checkbox" name="farmacia-disciplinas" value="Farmacologia"> Farmacologia</label>
             </div>
 
-            <button type="button" onclick="enviarEscolhas()">Enviar escolhas</button>
+            <button type="button" id="enviarEscolhasBtn" style="display:none;" onclick="enviarEscolhas()">Enviar escolhas</button>
         </form>
     </section>
     <!-- Fim do HTML -->
@@ -222,10 +275,20 @@
         // Função para mostrar ou esconder disciplinas com base na área selecionada
         function toggleDisciplinas(area) {
             var element = document.getElementById(area + '-disciplinas');
+            var checkboxes = document.querySelectorAll('#formAreas input[type="checkbox"]:checked');
+            var enviarBtn = document.getElementById('enviarEscolhasBtn');
+
             if (element.style.display === 'none') {
                 element.style.display = 'block';
             } else {
                 element.style.display = 'none';
+            }
+
+            // Verifica se há algum checkbox selecionado para exibir o botão "Enviar escolhas"
+            if (checkboxes.length > 0) {
+                enviarBtn.style.display = 'block';
+            } else {
+                enviarBtn.style.display = 'none';
             }
         }
 
@@ -255,6 +318,25 @@
             // Aqui você pode fazer o envio para um servidor ou Google Sheets
             alert('Suas escolhas foram enviadas!');
         }
+
+        // Função para alternar entre modo claro e modo escuro
+        function toggleDarkMode() {
+            const body = document.body;
+            const toggleButton = document.getElementById('darkModeToggle');
+            body.classList.toggle("dark-mode");
+
+            // Altera o ícone do botão de acordo com o modo atual
+            if (body.classList.contains("dark-mode")) {
+                toggleButton.textContent = "☀️";
+            } else {
+                toggleButton.textContent = "🌙";
+            }
+        }
+
+        // Carregar a preferência de modo escuro
+        window.onload = function() {
+            document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
+        };
     </script>
     <!-- Fim do JavaScript -->
 
