@@ -262,135 +262,151 @@
             <button type="submit" class="submit-button">Enviar Escolhas</button>
         </form>
     </div>
-
     <script>
         const cursoSelect = document.getElementById('curso');
-        const selectedCoursesDiv = document.getElementById('selectedCourses');
-        const disciplineListDiv = document.getElementById('disciplineList');
-        const toggleDarkMode = document.getElementById('darkModeToggle');
-        const body = document.body;
+const selectedCoursesDiv = document.getElementById('selectedCourses');
+const disciplineListDiv = document.getElementById('disciplineList');
+const toggleDarkMode = document.getElementById('darkModeToggle');
+const body = document.body;
 
-        const courseForm = document.getElementById('courseForm');
-        const nomeInput = document.getElementById('nome');
-        const matriculaInput = document.getElementById('matricula');
-        const emailInput = document.getElementById('email');
-        const nomeError = document.getElementById('nomeError');
-        const matriculaError = document.getElementById('matriculaError');
-        const emailError = document.getElementById('emailError');
+const courseForm = document.getElementById('courseForm');
+const nomeInput = document.getElementById('nome');
+const matriculaInput = document.getElementById('matricula');
+const emailInput = document.getElementById('email');
+const nomeError = document.getElementById('nomeError');
+const matriculaError = document.getElementById('matriculaError');
+const emailError = document.getElementById('emailError');
 
-        const courses = {
-            'curso1': { name: 'Curso 1 - Engenharia', disciplines: ['Cálculo I', 'Física Geral'] },
-            'curso2': { name: 'Curso 2 - Informática', disciplines: ['Algoritmos', 'Estruturas de Dados'] },
-            'curso3': { name: 'Curso 3 - Matemática', disciplines: ['Álgebra Linear', 'Geometria Analítica'] }
-        };
+const courses = {
+    'curso1': { name: 'Curso 1 - Engenharia', disciplines: ['Cálculo I', 'Física Geral'] },
+    'curso2': { name: 'Curso 2 - Informática', disciplines: ['Algoritmos', 'Estruturas de Dados'] },
+    'curso3': { name: 'Curso 3 - Matemática', disciplines: ['Álgebra Linear', 'Geometria Analítica'] }
+};
 
-        let selectedCourses = [];
+let selectedCourses = [];
 
-        // Expressões regulares para validação
-        const nomeRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+(?: [A-Za-zÀ-ÖØ-öø-ÿ]+)*$/;
-        const matriculaRegex = /^[A-Za-z0-9]{7}$/;
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@(unisuam\.edu\.br|souunisuam\.com\.br)$/;
+// Expressões regulares para validação
+const nomeRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+(?: [A-Za-zÀ-ÖØ-öø-ÿ]+)*$/;
+const matriculaRegex = /^[A-Za-z0-9]{7}$/;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@(unisuam\.edu\.br|souunisuam\.com\.br)$/;
 
-        // Alternar modo escuro e claro e armazenar preferência
-        toggleDarkMode.addEventListener('click', function() {
-            const isDarkMode = body.classList.toggle('dark-mode');
-            toggleDarkMode.textContent = isDarkMode ? '☀️' : '🌙';
-            localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+// Substitua pela URL do Google Apps Script gerada ao publicar o script
+const scriptURL = 'URL_DO_SEU_GOOGLE_APPS_SCRIPT_AQUI'; // Adicione a URL do Google Apps Script aqui
+
+// Alternar modo escuro e claro e armazenar preferência
+toggleDarkMode.addEventListener('click', function() {
+    const isDarkMode = body.classList.toggle('dark-mode');
+    toggleDarkMode.textContent = isDarkMode ? '☀️' : '🌙';
+    localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+});
+
+// Carregar a preferência de modo escuro ao iniciar a página
+window.onload = function() {
+    const darkModePreference = localStorage.getItem('darkMode');
+    if (darkModePreference === 'enabled') {
+        body.classList.add('dark-mode');
+        toggleDarkMode.textContent = '☀️';
+    }
+};
+
+cursoSelect.addEventListener('change', function () {
+    const selectedValue = cursoSelect.value;
+
+    // Verifica se o curso já foi selecionado
+    if (selectedCourses.includes(selectedValue)) {
+        alert('Este curso já foi selecionado.');
+        return;
+    }
+
+    // Adiciona o curso à lista de selecionados
+    selectedCourses.push(selectedValue);
+    updateSelectedCourses();
+    updateDisciplineList();
+});
+
+// Validação dos campos de nome, matrícula e e-mail e envio para a planilha
+courseForm.addEventListener('submit', function(event) {
+    event.preventDefault(); // Impedir o envio padrão do formulário
+
+    let isValid = true;
+
+    // Validação do campo nome
+    if (!nomeRegex.test(nomeInput.value)) {
+        nomeError.style.display = 'block';
+        isValid = false;
+    } else {
+        nomeError.style.display = 'none';
+    }
+
+    // Validação do campo matrícula
+    if (!matriculaRegex.test(matriculaInput.value)) {
+        matriculaError.style.display = 'block';
+        isValid = false;
+    } else {
+        matriculaError.style.display = 'none';
+    }
+
+    // Validação do campo e-mail
+    if (!emailRegex.test(emailInput.value)) {
+        emailError.style.display = 'block';
+        isValid = false;
+    } else {
+        emailError.style.display = 'none';
+    }
+
+    // Se os dados forem válidos, enviar os dados para o Google Sheets
+    if (isValid) {
+        // Preparar os dados do formulário
+        const formData = new FormData(courseForm);
+
+        fetch(scriptURL, { method: 'POST', body: formData })
+            .then(response => response.text())
+            .then(result => {
+                alert('Dados enviados com sucesso!');
+                courseForm.reset(); // Limpar o formulário após o envio
+                selectedCourses = []; // Limpar os cursos selecionados
+                updateSelectedCourses(); // Atualizar a interface
+                updateDisciplineList(); // Limpar disciplinas
+            })
+            .catch(error => alert('Erro ao enviar dados: ' + error.message));
+    }
+});
+
+function updateSelectedCourses() {
+    selectedCoursesDiv.innerHTML = '';
+    selectedCourses.forEach(course => {
+        const courseTag = document.createElement('div');
+        courseTag.classList.add('course-tag');
+        courseTag.innerHTML = `${courses[course].name} <span onclick="removeCourse('${course}')">x</span>`;
+        selectedCoursesDiv.appendChild(courseTag);
+    });
+}
+
+function removeCourse(course) {
+    selectedCourses = selectedCourses.filter(c => c !== course);
+    updateSelectedCourses();
+    updateDisciplineList();
+}
+
+function updateDisciplineList() {
+    disciplineListDiv.innerHTML = '';
+    selectedCourses.forEach(course => {
+        const courseTitle = document.createElement('h3');
+        courseTitle.textContent = courses[course].name;
+
+        const checkboxGroup = document.createElement('div');
+        checkboxGroup.classList.add('checkbox-group');
+
+        courses[course].disciplines.forEach(discipline => {
+            const label = document.createElement('label');
+            label.innerHTML = `<input type="checkbox" name="disciplinas[]" value="${discipline}"> ${discipline}`;
+            checkboxGroup.appendChild(label);
         });
 
-        // Carregar a preferência de modo escuro ao iniciar a página
-        window.onload = function() {
-            const darkModePreference = localStorage.getItem('darkMode');
-            if (darkModePreference === 'enabled') {
-                body.classList.add('dark-mode');
-                toggleDarkMode.textContent = '☀️';
-            }
-        };
-
-        cursoSelect.addEventListener('change', function () {
-            const selectedValue = cursoSelect.value;
-
-            // Verifica se o curso já foi selecionado
-            if (selectedCourses.includes(selectedValue)) {
-                alert('Este curso já foi selecionado.');
-                return;
-            }
-
-            // Adiciona o curso à lista de selecionados
-            selectedCourses.push(selectedValue);
-            updateSelectedCourses();
-            updateDisciplineList();
-        });
-
-        // Validação dos campos de nome, matrícula e e-mail
-        courseForm.addEventListener('submit', function(event) {
-            let isValid = true;
-
-            // Validação do campo nome
-            if (!nomeRegex.test(nomeInput.value)) {
-                nomeError.style.display = 'block';
-                isValid = false;
-            } else {
-                nomeError.style.display = 'none';
-            }
-
-            // Validação do campo matrícula
-            if (!matriculaRegex.test(matriculaInput.value)) {
-                matriculaError.style.display = 'block';
-                isValid = false;
-            } else {
-                matriculaError.style.display = 'none';
-            }
-
-            // Validação do campo e-mail
-            if (!emailRegex.test(emailInput.value)) {
-                emailError.style.display = 'block';
-                isValid = false;
-            } else {
-                emailError.style.display = 'none';
-            }
-
-            // Se houver erros, impedir o envio do formulário
-            if (!isValid) {
-                event.preventDefault();
-            }
-        });
-
-        function updateSelectedCourses() {
-            selectedCoursesDiv.innerHTML = '';
-            selectedCourses.forEach(course => {
-                const courseTag = document.createElement('div');
-                courseTag.classList.add('course-tag');
-                courseTag.innerHTML = `${courses[course].name} <span onclick="removeCourse('${course}')">x</span>`;
-                selectedCoursesDiv.appendChild(courseTag);
-            });
-        }
-
-        function removeCourse(course) {
-            selectedCourses = selectedCourses.filter(c => c !== course);
-            updateSelectedCourses();
-            updateDisciplineList();
-        }
-
-        function updateDisciplineList() {
-            disciplineListDiv.innerHTML = '';
-            selectedCourses.forEach(course => {
-                const courseTitle = document.createElement('h3');
-                courseTitle.textContent = courses[course].name;
-
-                const checkboxGroup = document.createElement('div');
-                checkboxGroup.classList.add('checkbox-group');
-
-                courses[course].disciplines.forEach(discipline => {
-                    const label = document.createElement('label');
-                    label.innerHTML = `<input type="checkbox" name="disciplinas[]" value="${discipline}"> ${discipline}`;
-                    checkboxGroup.appendChild(label);
-                });
-
-                disciplineListDiv.appendChild(courseTitle);
-                disciplineListDiv.appendChild(checkboxGroup);
-            });
-        }
+        disciplineListDiv.appendChild(courseTitle);
+        disciplineListDiv.appendChild(checkboxGroup);
+    });
+}
     </script>
 
 </body>
