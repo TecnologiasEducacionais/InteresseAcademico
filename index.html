@@ -290,39 +290,8 @@ const nomeRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+(?: [A-Za-zÀ-ÖØ-öø-ÿ]+)*$/;
 const matriculaRegex = /^[A-Za-z0-9]{7}$/;
 const emailRegex = /^[a-zA-Z0-9._%+-]+@(unisuam\.edu\.br|souunisuam\.com\.br)$/;
 
-// Substitua pela URL do Google Apps Script gerada ao publicar o script
-const scriptURL = 'https://script.google.com/macros/s/AKfycbx2SCxDuU9TwweU08NRyWK_urmdtkPih5-c9MmjwXlhEml6jRRdvsbTis2kJTAqyfM5/exec'; // Adicione a URL do Google Apps Script aqui
-
-// Alternar modo escuro e claro e armazenar preferência
-toggleDarkMode.addEventListener('click', function() {
-    const isDarkMode = body.classList.toggle('dark-mode');
-    toggleDarkMode.textContent = isDarkMode ? '☀️' : '🌙';
-    localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
-});
-
-// Carregar a preferência de modo escuro ao iniciar a página
-window.onload = function() {
-    const darkModePreference = localStorage.getItem('darkMode');
-    if (darkModePreference === 'enabled') {
-        body.classList.add('dark-mode');
-        toggleDarkMode.textContent = '☀️';
-    }
-};
-
-cursoSelect.addEventListener('change', function () {
-    const selectedValue = cursoSelect.value;
-
-    // Verifica se o curso já foi selecionado
-    if (selectedCourses.includes(selectedValue)) {
-        alert('Este curso já foi selecionado.');
-        return;
-    }
-
-    // Adiciona o curso à lista de selecionados
-    selectedCourses.push(selectedValue);
-    updateSelectedCourses();
-    updateDisciplineList();
-});
+// Substitua pela URL completa do Google Apps Script gerada ao publicar o script
+const scriptURL = 'https://script.google.com/macros/s/AKfycbzcFRLgwo5LiHuH7Of8exHXB3PJNdlU936-e-Ei6uA/dev'; // Adicione a URL do Google Apps Script aqui
 
 // Validação dos campos de nome, matrícula e e-mail e envio para a planilha
 courseForm.addEventListener('submit', function(event) {
@@ -354,15 +323,19 @@ courseForm.addEventListener('submit', function(event) {
         emailError.style.display = 'none';
     }
 
-    // Se os dados forem válidos, enviar os dados para o Google Sheets
+    // Se os dados forem válidos, enviar os dados via GET
     if (isValid) {
-        // Preparar os dados do formulário
-        const formData = new FormData(courseForm);
+        // Cria uma query string com os dados do formulário
+        const queryString = new URLSearchParams({
+            nome: nomeInput.value,
+            matricula: matriculaInput.value,
+            email: emailInput.value,
+            curso: cursoSelect.value
+        }).toString();
 
-        fetch(scriptURL, { 
-            method: 'POST', 
-            body: formData, 
-            mode: 'no-cors' // Desativa a verificação CORS
+        // Enviar os dados via GET, anexando-os à URL
+        fetch(`${scriptURL}?${queryString}`, {
+            method: 'GET',
         })
         .then(() => {
             alert('Dados enviados com sucesso!');
