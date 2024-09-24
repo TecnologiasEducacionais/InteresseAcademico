@@ -380,7 +380,7 @@ function updateSelectedCourses() {
     selectedCourses.forEach(course => {
         const courseTag = document.createElement('div');
         courseTag.classList.add('course-tag');
-        courseTag.innerHTML = ${courses[course].name} <span onclick="removeCourse('${course}')">x</span>;
+        courseTag.innerHTML = `${courses[course].name} <span onclick="removeCourse('${course}')">x</span>`;
         selectedCoursesDiv.appendChild(courseTag);
     });
 }
@@ -402,7 +402,7 @@ function updateDisciplineList() {
 
         courses[course].disciplines.forEach(discipline => {
             const label = document.createElement('label');
-            label.innerHTML = <input type="checkbox" name="disciplinas[]" value="${discipline}"> ${discipline};
+            label.innerHTML = `<input type="checkbox" name="disciplinas[]" value="${discipline}"> ${discipline}`;
             checkboxGroup.appendChild(label);
         });
 
