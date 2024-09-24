@@ -351,10 +351,37 @@ courseForm.addEventListener('submit', function(event) {
         emailError.style.display = 'none';
     }
 
-    // Se os dados forem válidos, pode-se adicionar alguma lógica extra aqui, como exibir uma mensagem
+    // Se os dados forem válidos
     if (isValid) {
-        alert('Dados válidos! Agora você pode prosseguir com o próximo passo.');
-        // Você pode adicionar uma ação aqui caso necessário, como salvar localmente ou outro comportamento
+        // Coletar os dados do formulário
+        const formData = {
+            nome: nomeInput.value,
+            matricula: matriculaInput.value,
+            email: emailInput.value,
+            cursos: selectedCourses,
+            disciplinas: Array.from(document.querySelectorAll('input[name="disciplinas[]"]:checked')).map(input => input.value)
+        };
+
+        // Substitua pelo URL do seu Google Apps Script
+        const googleScriptURL = 'https://script.google.com/macros/s/AKfycbxRwoiFn45zk8dUSubYRLZC0hUWRQ9sFe-XEQ4_w4jc6MWByfcccRMkGE9A9VnYYZoN-w/exec';
+
+        // Enviar os dados para o Google Apps Script
+        fetch(googleScriptURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Sucesso:', data);
+            alert('Formulário enviado com sucesso!');
+        })
+        .catch((error) => {
+            console.error('Erro:', error);
+            alert('Erro ao enviar o formulário.');
+        });
     }
 });
 
