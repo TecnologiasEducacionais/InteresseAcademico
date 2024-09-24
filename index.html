@@ -351,37 +351,10 @@ courseForm.addEventListener('submit', function(event) {
         emailError.style.display = 'none';
     }
 
-    // Se os dados forem válidos
+    // Se os dados forem válidos, pode-se adicionar alguma lógica extra aqui, como exibir uma mensagem
     if (isValid) {
-        // Coletar os dados do formulário
-        const formData = {
-            nome: nomeInput.value,
-            matricula: matriculaInput.value,
-            email: emailInput.value,
-            cursos: selectedCourses,
-            disciplinas: Array.from(document.querySelectorAll('input[name="disciplinas[]"]:checked')).map(input => input.value)
-        };
-
-        // Substitua pelo URL do seu Google Apps Script
-        const googleScriptURL = 'https://script.google.com/macros/s/AKfycbxRwoiFn45zk8dUSubYRLZC0hUWRQ9sFe-XEQ4_w4jc6MWByfcccRMkGE9A9VnYYZoN-w/exec';
-
-        // Enviar os dados para o Google Apps Script
-        fetch(googleScriptURL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Sucesso:', data);
-            alert('Formulário enviado com sucesso!');
-        })
-        .catch((error) => {
-            console.error('Erro:', error);
-            alert('Erro ao enviar o formulário.');
-        });
+        alert('Dados válidos! Agora você pode prosseguir com o próximo passo.');
+        // Você pode adicionar uma ação aqui caso necessário, como salvar localmente ou outro comportamento
     }
 });
 
@@ -390,7 +363,7 @@ function updateSelectedCourses() {
     selectedCourses.forEach(course => {
         const courseTag = document.createElement('div');
         courseTag.classList.add('course-tag');
-        courseTag.innerHTML = `${courses[course].name} <span onclick="removeCourse('${course}')">x</span>`;
+        courseTag.innerHTML = ${courses[course].name} <span onclick="removeCourse('${course}')">x</span>;
         selectedCoursesDiv.appendChild(courseTag);
     });
 }
@@ -412,7 +385,7 @@ function updateDisciplineList() {
 
         courses[course].disciplines.forEach(discipline => {
             const label = document.createElement('label');
-            label.innerHTML = `<input type="checkbox" name="disciplinas[]" value="${discipline}"> ${discipline}`;
+            label.innerHTML = <input type="checkbox" name="disciplinas[]" value="${discipline}"> ${discipline};
             checkboxGroup.appendChild(label);
         });
 
