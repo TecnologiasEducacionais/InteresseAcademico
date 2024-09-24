@@ -359,16 +359,19 @@ courseForm.addEventListener('submit', function(event) {
         // Preparar os dados do formulário
         const formData = new FormData(courseForm);
 
-        fetch(scriptURL, { method: 'POST', body: formData })
-            .then(response => response.text())
-            .then(result => {
-                alert('Dados enviados com sucesso!');
-                courseForm.reset(); // Limpar o formulário após o envio
-                selectedCourses = []; // Limpar os cursos selecionados
-                updateSelectedCourses(); // Atualizar a interface
-                updateDisciplineList(); // Limpar disciplinas
-            })
-            .catch(error => alert('Erro ao enviar dados: ' + error.message));
+        fetch(scriptURL, { 
+            method: 'POST', 
+            body: formData, 
+            mode: 'no-cors' // Desativa a verificação CORS
+        })
+        .then(() => {
+            alert('Dados enviados com sucesso!');
+            courseForm.reset(); // Limpar o formulário após o envio
+            selectedCourses = []; // Limpar os cursos selecionados
+            updateSelectedCourses(); // Atualizar a interface
+            updateDisciplineList(); // Limpar disciplinas
+        })
+        .catch(error => alert('Erro ao enviar dados: ' + error.message));
     }
 });
 
