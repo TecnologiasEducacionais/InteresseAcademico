@@ -290,8 +290,8 @@ const nomeRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+(?: [A-Za-zÀ-ÖØ-öø-ÿ]+)*$/;
 const matriculaRegex = /^[A-Za-z0-9]{7}$/;
 const emailRegex = /^[a-zA-Z0-9._%+-]+@(unisuam\.edu\.br|souunisuam\.com\.br)$/;
 
-// Substitua pela URL do Google Apps Script gerada ao publicar o script
-const scriptURL = 'https://script.google.com/macros/s/AKfycbwX2Sy9OT8daxXj4WECBHvdBOGjAinYsoQZTHfzjgqFDstGUVx4jvKZ9yn-V3RlxNWgLQ/exec'; // Adicione a URL do Google Apps Script aqui
+// Substitua pela URL do Webhook gerada pelo Zapier ou Make
+const webhookURL = 'URL_DO_SEU_WEBHOOK'; // Adicione a URL do seu Webhook (Zapier, Make, etc.)
 
 // Alternar modo escuro e claro e armazenar preferência
 toggleDarkMode.addEventListener('click', function() {
@@ -324,7 +324,7 @@ cursoSelect.addEventListener('change', function () {
     updateDisciplineList();
 });
 
-// Validação dos campos de nome, matrícula e e-mail e envio para a planilha
+// Validação dos campos de nome, matrícula e e-mail e envio para o Webhook
 courseForm.addEventListener('submit', function(event) {
     event.preventDefault(); // Impedir o envio padrão do formulário
 
@@ -354,22 +354,34 @@ courseForm.addEventListener('submit', function(event) {
         emailError.style.display = 'none';
     }
 
-    // Se os dados forem válidos, enviar os dados para o Google Sheets
+    // Se os dados forem válidos, enviar os dados para o Webhook
     if (isValid) {
-        // Preparar os dados do formulário
         const formData = new FormData(courseForm);
 
-        fetch(scriptURL, { 
-            method: 'POST', 
-            body: formData, 
-            mode: 'no-cors' // Desativa a verificação CORS
+        // Converter o formData para JSON
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = value;
+        });
+
+        // Enviar os dados via fetch para o Webhook
+        fetch(webhookURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data), // Enviar os dados em formato JSON
         })
-        .then(() => {
-            alert('Dados enviados com sucesso!');
-            courseForm.reset(); // Limpar o formulário após o envio
-            selectedCourses = []; // Limpar os cursos selecionados
-            updateSelectedCourses(); // Atualizar a interface
-            updateDisciplineList(); // Limpar disciplinas
+        .then(response => {
+            if (response.ok) {
+                alert('Dados enviados com sucesso!');
+                courseForm.reset(); // Limpar o formulário após o envio
+                selectedCourses = []; // Limpar os cursos selecionados
+                updateSelectedCourses(); // Atualizar a interface
+                updateDisciplineList(); // Limpar disciplinas
+            } else {
+                alert('Falha no envio dos dados.');
+            }
         })
         .catch(error => alert('Erro ao enviar dados: ' + error.message));
     }
