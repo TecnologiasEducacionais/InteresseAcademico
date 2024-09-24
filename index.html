@@ -3,79 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário de Seleção de Cursos</title>
-    <link rel="stylesheet" href="main.css">
+    <title>Formulário de Cursos e Disciplinas</title>
+    <style>
+        /* Estilos baseados no main.css */
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400&display=swap');
+
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        h1, h2 {
+            color: #004070;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input, select, button {
+            width: 100%;
+            max-width: 500px;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #004070;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #003060;
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+        }
+
+        /* Estilo para o modo escuro */
+        .dark-mode {
+            background-color: #1e1e1e;
+            color: #fff;
+        }
+
+        .dark-mode input, .dark-mode select, .dark-mode button {
+            background-color: #333;
+            color: #fff;
+            border-color: #555;
+        }
+
+        .dark-mode button {
+            background-color: #f5c200;
+            color: #000;
+        }
+
+        /* Botão para alternar modo */
+        .toggle-dark-mode {
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #004070;
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-dark-mode:hover {
+            transform: scale(1.2);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+    </style>
 </head>
 <body>
 
-    <header>
-        <h1>Seleção de Cursos e Disciplinas</h1>
-    </header>
+    <button id="darkModeToggle" class="toggle-dark-mode">🌙</button>
 
-    <div class="container">
-        <form id="courseForm">
+    <h1>Formulário de Seleção de Cursos e Disciplinas</h1>
+
+    <form id="courseForm">
+        <!-- Seção de informações pessoais -->
+        <div class="form-section">
             <h2>Informações Pessoais</h2>
             <label for="nome">Nome Completo:</label>
-            <input type="text" id="nome" name="nome" required>
+            <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required>
 
             <label for="matricula">Matrícula:</label>
-            <input type="text" id="matricula" name="matricula" required>
+            <input type="text" id="matricula" name="matricula" placeholder="Digite sua matrícula" required>
 
             <label for="email">E-mail:</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
+        </div>
 
+        <!-- Seção de seleção de cursos -->
+        <div class="form-section">
             <h2>Seleção de Cursos</h2>
             <label for="curso">Selecione o curso:</label>
             <select id="curso" name="curso" required>
                 <option value="" disabled selected>Escolha um curso</option>
-                <option value="curso1">Curso 1</option>
-                <option value="curso2">Curso 2</option>
-                <option value="curso3">Curso 3</option>
+                <option value="curso1">Curso 1 - Engenharia</option>
+                <option value="curso2">Curso 2 - Informática</option>
+                <option value="curso3">Curso 3 - Matemática</option>
             </select>
+        </div>
 
-            <div id="disciplinas" style="display:none;">
-                <h2>Seleção de Disciplinas</h2>
-                <div id="disciplinasCurso1" class="disciplinas-group" style="display:none;">
-                    <label><input type="checkbox" name="disciplinas[]" value="disciplina1"> Disciplina 1</label>
-                    <label><input type="checkbox" name="disciplinas[]" value="disciplina2"> Disciplina 2</label>
-                </div>
-                <div id="disciplinasCurso2" class="disciplinas-group" style="display:none;">
-                    <label><input type="checkbox" name="disciplinas[]" value="disciplina3"> Disciplina 3</label>
-                    <label><input type="checkbox" name="disciplinas[]" value="disciplina4"> Disciplina 4</label>
-                </div>
-                <div id="disciplinasCurso3" class="disciplinas-group" style="display:none;">
-                    <label><input type="checkbox" name="disciplinas[]" value="disciplina5"> Disciplina 5</label>
-                    <label><input type="checkbox" name="disciplinas[]" value="disciplina6"> Disciplina 6</label>
-                </div>
+        <!-- Seção de disciplinas dinâmicas -->
+        <div id="disciplinas" class="form-section hidden">
+            <h2>Selecione as Disciplinas</h2>
+
+            <!-- Disciplinas para Curso 1 -->
+            <div id="disciplinasCurso1" class="disciplinas-group hidden">
+                <label><input type="checkbox" name="disciplinas[]" value="disciplina1"> Cálculo I</label>
+                <label><input type="checkbox" name="disciplinas[]" value="disciplina2"> Física Geral</label>
             </div>
 
-            <button type="submit">Enviar Escolhas</button>
-        </form>
-    </div>
+            <!-- Disciplinas para Curso 2 -->
+            <div id="disciplinasCurso2" class="disciplinas-group hidden">
+                <label><input type="checkbox" name="disciplinas[]" value="disciplina3"> Algoritmos</label>
+                <label><input type="checkbox" name="disciplinas[]" value="disciplina4"> Estruturas de Dados</label>
+            </div>
 
-    <script src="main.js"></script>
+            <!-- Disciplinas para Curso 3 -->
+            <div id="disciplinasCurso3" class="disciplinas-group hidden">
+                <label><input type="checkbox" name="disciplinas[]" value="disciplina5"> Álgebra Linear</label>
+                <label><input type="checkbox" name="disciplinas[]" value="disciplina6"> Geometria Analítica</label>
+            </div>
+        </div>
+
+        <!-- Botão de envio -->
+        <button type="submit">Enviar Escolhas</button>
+    </form>
+
     <script>
-        // Exibir disciplinas com base no curso selecionado
-        document.getElementById('curso').addEventListener('change', function() {
-            var curso = this.value;
-            document.getElementById('disciplinas').style.display = 'block';
+        // Alternar modo escuro e claro
+        const toggleDarkMode = document.getElementById('darkModeToggle');
+        const body = document.body;
 
+        toggleDarkMode.addEventListener('click', function() {
+            body.classList.toggle('dark-mode');
+            toggleDarkMode.textContent = body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        });
+
+        // Mostrar disciplinas com base no curso selecionado
+        const cursoSelect = document.getElementById('curso');
+        const disciplinasSection = document.getElementById('disciplinas');
+        const disciplinasCurso1 = document.getElementById('disciplinasCurso1');
+        const disciplinasCurso2 = document.getElementById('disciplinasCurso2');
+        const disciplinasCurso3 = document.getElementById('disciplinasCurso3');
+
+        cursoSelect.addEventListener('change', function() {
             // Esconder todas as opções de disciplinas
-            document.querySelectorAll('.disciplinas-group').forEach(function(group) {
-                group.style.display = 'none';
-            });
+            disciplinasSection.classList.remove('hidden');
+            disciplinasCurso1.classList.add('hidden');
+            disciplinasCurso2.classList.add('hidden');
+            disciplinasCurso3.classList.add('hidden');
 
             // Mostrar as disciplinas correspondentes ao curso selecionado
-            if (curso === 'curso1') {
-                document.getElementById('disciplinasCurso1').style.display = 'block';
-            } else if (curso === 'curso2') {
-                document.getElementById('disciplinasCurso2').style.display = 'block';
-            } else if (curso === 'curso3') {
-                document.getElementById('disciplinasCurso3').style.display = 'block';
+            if (cursoSelect.value === 'curso1') {
+                disciplinasCurso1.classList.remove('hidden');
+            } else if (cursoSelect.value === 'curso2') {
+                disciplinasCurso2.classList.remove('hidden');
+            } else if (cursoSelect.value === 'curso3') {
+                disciplinasCurso3.classList.remove('hidden');
             }
         });
 
-        // Enviar o formulário
+        // Prevenir o envio padrão e alertar o usuário
         document.getElementById('courseForm').addEventListener('submit', function(e) {
             e.preventDefault();
             alert('Formulário enviado com sucesso!');
