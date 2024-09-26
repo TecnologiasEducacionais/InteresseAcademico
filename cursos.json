@@ -1,0 +1,14 @@
+{
+    "curso1": {
+        "name": "Curso 1 - Administração",
+        "disciplines": ["Empreendedorismo e Sustentabilidade", "Ambiente Corporativo e Comunicação", "Finanças Empresariais e Cenários Econômicos", "Planejamento Estratégico e Marketing Experience", "Pessoas, Valores e Cultura Organizacional", "Produção, Logística e Supply Chain Management", "Tecnologias e Sistemas de Informação", "Empresa, Gestão e Inovação"]
+    },
+    "curso2": {
+        "name": "Curso 2 - Contábeis",
+        "disciplines": ["Contabilidade Societária", "Contabilidade das Companhias de Grande Porte", "Auditoria e Planejamento tributário", "Perícia, Setor Público e Terceiro Setor"]
+    },
+    "curso3": {
+        "name": "Curso 3 - Gestão de Recursos Humanos",
+        "disciplines": ["Cultura Organizacional", "Recrutamento e Seleção", "Administração de Pessoal", "Gestão de Pessoas"]
+    }
+}
