@@ -1,14 +1,33 @@
 {
     "curso1": {
         "name": "Administração",
-        "disciplines": ["Empreendedorismo e Sustentabilidade", "Ambiente Corporativo e Comunicação", "Finanças Empresariais e Cenários Econômicos", "Planejamento Estratégico e Marketing Experience", "Pessoas, Valores e Cultura Organizacional", "Produção, Logística e Supply Chain Management", "Tecnologias e Sistemas de Informação", "Empresa, Gestão e Inovação"]
+        "disciplines": [
+            {"name": "Empreendedorismo e Sustentabilidade", "hours": 4},
+            {"name": "Ambiente Corporativo e Comunicação", "hours": 4},
+            {"name": "Finanças Empresariais e Cenários Econômicos", "hours": 4},
+            {"name": "Planejamento Estratégico e Marketing Experience", "hours": 4},
+            {"name": "Pessoas, Valores e Cultura Organizacional", "hours": 4},
+            {"name": "Produção, Logística e Supply Chain Management", "hours": 4},
+            {"name": "Tecnologias e Sistemas de Informação", "hours": 4},
+            {"name": "Empresa, Gestão e Inovação", "hours": 4}
+        ]
     },
     "curso2": {
         "name": "Contábeis",
-        "disciplines": ["Contabilidade Societária", "Contabilidade das Companhias de Grande Porte", "Auditoria e Planejamento tributário", "Perícia, Setor Público e Terceiro Setor"]
+        "disciplines": [
+            {"name": "Contabilidade Societária", "hours": 4},
+            {"name": "Contabilidade das Companhias de Grande Porte", "hours": 4},
+            {"name": "Auditoria e Planejamento tributário", "hours": 4},
+            {"name": "Perícia, Setor Público e Terceiro Setor", "hours": 4}
+        ]
     },
     "curso3": {
         "name": "Gestão de Recursos Humanos",
-        "disciplines": ["Cultura Organizacional", "Recrutamento e Seleção", "Administração de Pessoal", "Gestão de Pessoas"]
+        "disciplines": [
+            {"name": "Cultura Organizacional", "hours": 4},
+            {"name": "Recrutamento e Seleção", "hours": 4},
+            {"name": "Administração de Pessoal", "hours": 4},
+            {"name": "Gestão de Pessoas", "hours": 4}
+        ]
     }
 }
