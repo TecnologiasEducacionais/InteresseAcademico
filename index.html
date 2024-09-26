@@ -194,6 +194,29 @@
             color: #ffffff;
         }
 
+        /* Contador e Barra de Progresso */
+        #hours-counter {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #333;
+        }
+
+        #progress-bar-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            height: 20px;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: #4caf50;
+            border-radius: 5px;
+            transition: width 0.3s ease-in-out;
+        }
     </style>
 </head>
 <body>
@@ -209,19 +232,25 @@
             <p>Preencha suas informações e selecione os cursos e disciplinas que você irá ministrar.</p>
         </div>
 
-        <form id="courseForm">
+        <!-- Contador e Barra de Progresso -->
+        <div id="hours-counter">0/40 horas preenchidas</div>
+        <div id="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
+
+        <form id="courseForm" method="POST" action="processar_formulario.php">
             <div class="form-section">
                 <label for="nome">Nome Completo</label>
                 <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required>
-                <div class="error-message" id="nomeError">Nome inválido. Exemplo: Seu nome Completo</div>
+                <div class="error-message" id="nomeError">Nome inválido. O nome deve conter apenas letras.</div>
 
                 <label for="matricula">Matrícula</label>
                 <input type="text" id="matricula" name="matricula" placeholder="Digite sua matrícula" required>
-                <div class="error-message" id="matriculaError">Matrícula inválida. Exemplo: VET2000, ADM5000, 0100800</div>
+                <div class="error-message" id="matriculaError">Matrícula inválida. Deve conter exatamente 7 dígitos.</div>
 
                 <label for="email">E-mail</label>
                 <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
-                <div class="error-message" id="emailError">E-mail inválido. Exemplo: exemplo.email@unisuam.edu.br</div>
+                <div class="error-message" id="emailError">E-mail inválido. Exemplo: exemplo@unisuam.edu.br</div>
             </div>
 
             <div class="form-section">
@@ -235,122 +264,188 @@
 
             <div class="discipline-list" id="disciplineList"></div>
 
-            <button type="submit" class="submit-button">Enviar Escolhas</button>
+            <button type="submit" class="submit-button" disabled>Enviar Escolhas</button>
+            <input type="hidden" id="total_horas" name="total_horas">
         </form>
     </div>
+
     <script>
-        const cursoSelect = document.getElementById('curso');
-const selectedCoursesDiv = document.getElementById('selectedCourses');
-const disciplineListDiv = document.getElementById('disciplineList');
-const toggleDarkMode = document.getElementById('darkModeToggle');
-const body = document.body;
+    const cursoSelect = document.getElementById('curso');
+    const selectedCoursesDiv = document.getElementById('selectedCourses');
+    const disciplineListDiv = document.getElementById('disciplineList');
+    const toggleDarkMode = document.getElementById('darkModeToggle');
+    const body = document.body;
 
-let courses = {};
-let selectedCourses = [];
-let selectedDisciplines = {};  // Armazena disciplinas selecionadas por curso
+    let courses = {};
+    let selectedCourses = [];
+    let selectedDisciplines = {};  // Armazena disciplinas selecionadas por curso
+    let totalHours = 0;
+    const requiredHours = 40;
+    const submitButton = document.querySelector('.submit-button');
+    const hoursCounter = document.getElementById('hours-counter'); // Contador de horas
+    const progressBar = document.getElementById('progress-bar');   // Barra de progresso
 
-// Carregar preferência de modo escuro do localStorage
-if (localStorage.getItem('darkMode') === 'enabled') {
-    body.classList.add('dark-mode');
-    toggleDarkMode.textContent = '☀️';  // Ícone de sol para desativar o modo escuro
-} else {
-    toggleDarkMode.textContent = '🌙';  // Ícone de lua para ativar o modo escuro
-}
+    // Carregar os cursos a partir de um arquivo JSON
+    fetch('cursos.json')
+        .then(response => response.json())
+        .then(data => {
+            courses = data;
+            populateCourseSelect();
+        })
+        .catch(error => console.error('Erro ao carregar os cursos:', error));
 
-// Alternar modo escuro
-toggleDarkMode.addEventListener('click', function() {
-    body.classList.toggle('dark-mode');
-    if (body.classList.contains('dark-mode')) {
-        localStorage.setItem('darkMode', 'enabled');
-        toggleDarkMode.textContent = '☀️';  // Ícone de sol para desativar
-    } else {
-        localStorage.setItem('darkMode', 'disabled');
-        toggleDarkMode.textContent = '🌙';  // Ícone de lua para ativar
-    }
-});
-
-// Carregar os cursos a partir de um arquivo JSON
-fetch('cursos.json')
-    .then(response => response.json())
-    .then(data => {
-        courses = data;
-        populateCourseSelect();
-    })
-    .catch(error => console.error('Erro ao carregar os cursos:', error));
-
-function populateCourseSelect() {
-    Object.keys(courses).forEach(courseKey => {
-        const option = document.createElement('option');
-        option.value = courseKey;
-        option.textContent = courses[courseKey].name;
-        cursoSelect.appendChild(option);
-    });
-}
-
-cursoSelect.addEventListener('change', function () {
-    const selectedValue = cursoSelect.value;
-
-    if (selectedCourses.includes(selectedValue)) {
-        alert('Este curso já foi selecionado.');
-        return;
-    }
-
-    selectedCourses.push(selectedValue);
-    updateSelectedCourses();
-    updateDisciplineList();
-});
-
-function updateSelectedCourses() {
-    selectedCoursesDiv.innerHTML = '';
-    selectedCourses.forEach((course, index) => {
-        const courseNumber = index + 1; // Número dinâmico
-        const courseTag = document.createElement('div');
-        courseTag.classList.add('course-tag');
-        courseTag.innerHTML = `Curso ${courseNumber} - ${courses[course].name} <span onclick="removeCourse('${course}')">x</span>`;
-        selectedCoursesDiv.appendChild(courseTag);
-    });
-}
-
-function removeCourse(course) {
-    selectedCourses = selectedCourses.filter(c => c !== course);
-    updateSelectedCourses();
-    updateDisciplineList();
-}
-
-function updateDisciplineList() {
-    disciplineListDiv.innerHTML = '';
-    selectedCourses.forEach((course, index) => {
-        const courseNumber = index + 1; // Número dinâmico
-        const courseTitle = document.createElement('h3');
-        courseTitle.textContent = `Curso ${courseNumber} - ${courses[course].name}`;
-
-        const checkboxGroup = document.createElement('div');
-        checkboxGroup.classList.add('checkbox-group');
-
-        courses[course].disciplines.forEach(discipline => {
-            const isChecked = selectedDisciplines[course] && selectedDisciplines[course].includes(discipline);
-            const label = document.createElement('label');
-            label.innerHTML = `<input type="checkbox" name="disciplinas[]" value="${discipline}" ${isChecked ? 'checked' : ''} onchange="toggleDiscipline('${course}', '${discipline}')"> ${discipline}`;
-            checkboxGroup.appendChild(label);
+    function populateCourseSelect() {
+        Object.keys(courses).forEach(courseKey => {
+            const option = document.createElement('option');
+            option.value = courseKey;
+            option.textContent = courses[courseKey].name;
+            cursoSelect.appendChild(option);
         });
+    }
 
-        disciplineListDiv.appendChild(courseTitle);
-        disciplineListDiv.appendChild(checkboxGroup);
+    cursoSelect.addEventListener('change', function () {
+        const selectedValue = cursoSelect.value;
+
+        if (selectedCourses.includes(selectedValue)) {
+            alert('Este curso já foi selecionado.');
+            return;
+        }
+
+        selectedCourses.push(selectedValue);
+        updateSelectedCourses();
+        updateDisciplineList();
     });
-}
 
-function toggleDiscipline(course, discipline) {
-    if (!selectedDisciplines[course]) {
-        selectedDisciplines[course] = [];
+    function updateSelectedCourses() {
+        selectedCoursesDiv.innerHTML = '';
+        selectedCourses.forEach((course, index) => {
+            const courseNumber = index + 1; // Número dinâmico
+            const courseTag = document.createElement('div');
+            courseTag.classList.add('course-tag');
+            courseTag.innerHTML = `Curso ${courseNumber} - ${courses[course].name} <span onclick="removeCourse('${course}')">x</span>`;
+            selectedCoursesDiv.appendChild(courseTag);
+        });
     }
 
-    if (selectedDisciplines[course].includes(discipline)) {
-        selectedDisciplines[course] = selectedDisciplines[course].filter(d => d !== discipline);
-    } else {
-        selectedDisciplines[course].push(discipline);
+    function removeCourse(course) {
+        selectedCourses = selectedCourses.filter(c => c !== course);
+        updateSelectedCourses();
+        updateDisciplineList();
     }
-}
 
+    function updateDisciplineList() {
+        disciplineListDiv.innerHTML = '';
+        totalHours = 0; // Reiniciar a contagem de horas
+        selectedCourses.forEach((course, index) => {
+            const courseNumber = index + 1; // Número dinâmico
+            const courseTitle = document.createElement('h3');
+            courseTitle.textContent = `Curso ${courseNumber} - ${courses[course].name}`;
+
+            const checkboxGroup = document.createElement('div');
+            checkboxGroup.classList.add('checkbox-group');
+
+            courses[course].disciplines.forEach(discipline => {
+                const isChecked = selectedDisciplines[course] && selectedDisciplines[course].includes(discipline.name);
+                const label = document.createElement('label');
+                label.innerHTML = `<input type="checkbox" name="disciplinas[]" value="${discipline.name}" data-hours="${discipline.hours}" ${isChecked ? 'checked' : ''} onchange="toggleDiscipline('${course}', '${discipline.name}', ${discipline.hours})"> ${discipline.name} (${discipline.hours}h)`;
+                checkboxGroup.appendChild(label);
+
+                // Se a disciplina já estiver selecionada, somar as horas
+                if (isChecked) {
+                    totalHours += discipline.hours;
+                }
+            });
+
+            disciplineListDiv.appendChild(courseTitle);
+            disciplineListDiv.appendChild(checkboxGroup);
+        });
+        updateSubmitButton(); // Verifica se as horas totais atingem o limite necessário
+        updateProgress(); // Atualiza o contador e a barra de progresso
+    }
+
+    function toggleDiscipline(course, discipline, hours) {
+        if (!selectedDisciplines[course]) {
+            selectedDisciplines[course] = [];
+        }
+
+        if (selectedDisciplines[course].includes(discipline)) {
+            selectedDisciplines[course] = selectedDisciplines[course].filter(d => d !== discipline);
+            totalHours -= hours; // Subtrair horas quando a disciplina é desmarcada
+        } else {
+            selectedDisciplines[course].push(discipline);
+            totalHours += hours; // Adicionar horas quando a disciplina é marcada
+        }
+
+        updateSubmitButton(); // Atualiza a validação de horas totais
+        updateProgress(); // Atualiza o contador e a barra de progresso
+    }
+
+    function updateSubmitButton() {
+        if (totalHours >= requiredHours) {
+            submitButton.disabled = false;
+            hoursCounter.textContent = `Total de horas selecionadas: ${totalHours}/${requiredHours} horas preenchidas.`;
+        } else {
+            submitButton.disabled = true;
+            hoursCounter.textContent = `${totalHours}/${requiredHours} horas preenchidas. Faltam ${requiredHours - totalHours}h para completar as 40 horas necessárias.`;
+        }
+    }
+
+    function updateProgress() {
+        // Atualiza o texto do contador de horas
+        hoursCounter.textContent = `${totalHours}/${requiredHours} horas preenchidas`;
+
+        // Atualiza a largura da barra de progresso (limitada a 100%)
+        const progressPercentage = (totalHours / requiredHours) * 100;
+        progressBar.style.width = `${progressPercentage > 100 ? 100 : progressPercentage}%`;
+    }
+
+    // Evento submit para capturar e validar o total de horas antes do envio
+    courseForm.addEventListener('submit', function (event) {
+        document.getElementById('total_horas').value = totalHours; // Adiciona o total de horas ao campo oculto
+        let valid = true;
+
+        if (totalHours < requiredHours) {
+            valid = false;
+            alert('Você deve selecionar disciplinas que totalizem no mínimo 40 horas.');
+        }
+
+        const nome = document.getElementById('nome');
+        const matricula = document.getElementById('matricula');
+        const email = document.getElementById('email');
+        const nomeError = document.getElementById('nomeError');
+        const matriculaError = document.getElementById('matriculaError');
+        const emailError = document.getElementById('emailError');
+
+        // Validação do nome (somente letras)
+        if (!/^[A-Za-z\s]+$/.test(nome.value.trim())) {
+            nomeError.style.display = 'block';
+            valid = false;
+        } else {
+            nomeError.style.display = 'none';
+        }
+
+        // Validação da matrícula (7 dígitos)
+        if (!/^\d{7}$/.test(matricula.value)) {
+            matriculaError.style.display = 'block';
+            valid = false;
+        } else {
+            matriculaError.style.display = 'none';
+        }
+
+        // Validação do e-mail (domínio específico)
+        const emailRegex = /^[^\s@]+@unisuam\.edu\.br$/;
+        if (!emailRegex.test(email.value)) {
+            emailError.style.display = 'block';
+            valid = false;
+        } else {
+            emailError.style.display = 'none';
+        }
+
+        // Impedir o envio se o formulário não for válido
+        if (!valid) {
+            event.preventDefault();
+        }
+    });
     </script>
 </body>
 </html>
