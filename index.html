@@ -363,7 +363,7 @@ function updateSelectedCourses() {
     selectedCourses.forEach(course => {
         const courseTag = document.createElement('div');
         courseTag.classList.add('course-tag');
-        courseTag.innerHTML = ${courses[course].name} <span onclick="removeCourse('${course}')">x</span>;
+        courseTag.innerHTML = `${courses[course].name} <span onclick="removeCourse('${course}')">x</span>`;
         selectedCoursesDiv.appendChild(courseTag);
     });
 }
