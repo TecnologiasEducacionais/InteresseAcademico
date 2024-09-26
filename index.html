@@ -385,7 +385,7 @@ function updateDisciplineList() {
 
         courses[course].disciplines.forEach(discipline => {
             const label = document.createElement('label');
-            label.innerHTML = <input type="checkbox" name="disciplinas[]" value="${discipline}"> ${discipline};
+            label.innerHTML = `<input type="checkbox" name="disciplinas[]" value="${discipline}"> ${discipline}`;
             checkboxGroup.appendChild(label);
         });
 
