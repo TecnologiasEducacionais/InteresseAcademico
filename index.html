@@ -281,14 +281,15 @@
         });
 
         function updateSelectedCourses() {
-            selectedCoursesDiv.innerHTML = '';
-            selectedCourses.forEach(course => {
-                const courseTag = document.createElement('div');
-                courseTag.classList.add('course-tag');
-                courseTag.innerHTML = `${courses[course].name} <span onclick="removeCourse('${course}')">x</span>`;
-                selectedCoursesDiv.appendChild(courseTag);
-            });
-        }
+    selectedCoursesDiv.innerHTML = '';
+    selectedCourses.forEach((course, index) => {
+        const courseNumber = index + 1; // Número dinâmico
+        const courseTag = document.createElement('div');
+        courseTag.classList.add('course-tag');
+        courseTag.innerHTML = `Curso ${courseNumber} - ${courses[course].name} <span onclick="removeCourse('${course}')">x</span>`;
+        selectedCoursesDiv.appendChild(courseTag);
+    });
+}
 
         function removeCourse(course) {
             selectedCourses = selectedCourses.filter(c => c !== course);
@@ -297,25 +298,27 @@
         }
 
         function updateDisciplineList() {
-            disciplineListDiv.innerHTML = '';
-            selectedCourses.forEach(course => {
-                const courseTitle = document.createElement('h3');
-                courseTitle.textContent = courses[course].name;
+    disciplineListDiv.innerHTML = '';
+    selectedCourses.forEach((course, index) => {
+        const courseNumber = index + 1; // Número dinâmico
+        const courseTitle = document.createElement('h3');
+        courseTitle.textContent = `Curso ${courseNumber} - ${courses[course].name}`;
 
-                const checkboxGroup = document.createElement('div');
-                checkboxGroup.classList.add('checkbox-group');
+        const checkboxGroup = document.createElement('div');
+        checkboxGroup.classList.add('checkbox-group');
 
-                courses[course].disciplines.forEach(discipline => {
-                    const isChecked = selectedDisciplines[course] && selectedDisciplines[course].includes(discipline);
-                    const label = document.createElement('label');
-                    label.innerHTML = `<input type="checkbox" name="disciplinas[]" value="${discipline}" ${isChecked ? 'checked' : ''} onchange="toggleDiscipline('${course}', '${discipline}')"> ${discipline}`;
-                    checkboxGroup.appendChild(label);
-                });
+        courses[course].disciplines.forEach(discipline => {
+            const isChecked = selectedDisciplines[course] && selectedDisciplines[course].includes(discipline);
+            const label = document.createElement('label');
+            label.innerHTML = `<input type="checkbox" name="disciplinas[]" value="${discipline}" ${isChecked ? 'checked' : ''} onchange="toggleDiscipline('${course}', '${discipline}')"> ${discipline}`;
+            checkboxGroup.appendChild(label);
+        });
 
-                disciplineListDiv.appendChild(courseTitle);
-                disciplineListDiv.appendChild(checkboxGroup);
-            });
-        }
+        disciplineListDiv.appendChild(courseTitle);
+        disciplineListDiv.appendChild(checkboxGroup);
+    });
+}
+
 
         function toggleDiscipline(course, discipline) {
             if (!selectedDisciplines[course]) {
