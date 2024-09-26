@@ -21,7 +21,6 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* Barra superior azul */
         header {
             background-color: #004070;
             color: #fff;
@@ -47,19 +46,17 @@
             margin-right: 20px;
         }
 
-        /* Container principal */
         .form-container {
             background-color: white;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             max-width: 700px;
-            margin-top: 80px; /* Espaçamento por causa do header fixo */
-            padding: 30px; /* Espaçamento interno ajustado */
+            margin-top: 80px;
+            padding: 30px;
             border-radius: 8px;
             width: 100%;
             transition: box-shadow 0.3s ease;
         }
 
-        /* Sombra clara/escura */
         body:not(.dark-mode) .form-container {
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
@@ -70,7 +67,6 @@
             color: #fff;
         }
 
-        /* Estilo dos campos de formulário */
         .form-section {
             margin-bottom: 20px;
         }
@@ -80,8 +76,6 @@
             font-weight: bold;
             margin-bottom: 5px;
             display: block;
-            text-align: left;
-            width: 100%;
         }
 
         input[type="text"], input[type="email"], select {
@@ -99,7 +93,6 @@
             outline: none;
         }
 
-        /* Estilo das mensagens de erro */
         .error-message {
             color: red;
             font-size: 12px;
@@ -108,7 +101,6 @@
             display: none;
         }
 
-        /* Estilo das tags de cursos selecionados */
         #selectedCourses {
             display: flex;
             flex-wrap: wrap;
@@ -131,7 +123,6 @@
             cursor: pointer;
         }
 
-        /* Estilo das disciplinas listadas */
         .discipline-list {
             margin-top: 20px;
         }
@@ -157,7 +148,6 @@
             margin-right: 10px;
         }
 
-        /* Botão de envio */
         .submit-button {
             background-color: #ea5a33;
             color: white;
@@ -173,7 +163,6 @@
             background-color: #cc5227;
         }
 
-        /* Estilos para o modo escuro */
         .dark-mode {
             background-color: #1e1e1e;
             color: #ffffff;
@@ -194,7 +183,6 @@
             color: #000;
         }
 
-        /* Ajustes de sombra e cores em modo escuro */
         .dark-mode .course-tag {
             background-color: #555;
         }
@@ -216,14 +204,12 @@
     </header>
 
     <div class="form-container">
-        <!-- Cabeçalho do formulário -->
         <div class="form-header">
             <h1>Seleção de Cursos e Disciplinas</h1>
             <p>Preencha suas informações e selecione os cursos e disciplinas que você irá ministrar.</p>
         </div>
 
-        <form id="courseForm" action="receber_dados.php" method="POST">
-            <!-- Seção de informações pessoais -->
+        <form id="courseForm">
             <div class="form-section">
                 <label for="nome">Nome Completo</label>
                 <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required>
@@ -238,162 +224,110 @@
                 <div class="error-message" id="emailError">E-mail inválido. Exemplo: exemplo.email@unisuam.edu.br</div>
             </div>
 
-            <!-- Seção de seleção de curso -->
             <div class="form-section">
                 <label for="curso">Selecione o Curso</label>
                 <select id="curso" name="curso">
                     <option value="" disabled selected>Escolha um curso</option>
-                    <option value="curso1">Curso 1 - Engenharia</option>
-                    <option value="curso2">Curso 2 - Informática</option>
-                    <option value="curso3">Curso 3 - Matemática</option>
                 </select>
             </div>
 
-            <!-- Seção de tags de cursos selecionados -->
-            <div class="form-section" id="selectedCourses">
-                <!-- Aqui as tags dos cursos selecionados serão exibidas -->
-            </div>
+            <div class="form-section" id="selectedCourses"></div>
 
-            <!-- Disciplinas Dinâmicas -->
-            <div class="discipline-list" id="disciplineList">
-                <!-- As disciplinas aparecerão dinamicamente aqui -->
-            </div>
+            <div class="discipline-list" id="disciplineList"></div>
 
-            <!-- Botão de envio -->
             <button type="submit" class="submit-button">Enviar Escolhas</button>
         </form>
     </div>
     <script>
         const cursoSelect = document.getElementById('curso');
-const selectedCoursesDiv = document.getElementById('selectedCourses');
-const disciplineListDiv = document.getElementById('disciplineList');
-const toggleDarkMode = document.getElementById('darkModeToggle');
-const body = document.body;
+        const selectedCoursesDiv = document.getElementById('selectedCourses');
+        const disciplineListDiv = document.getElementById('disciplineList');
+        const toggleDarkMode = document.getElementById('darkModeToggle');
+        const body = document.body;
 
-const courseForm = document.getElementById('courseForm');
-const nomeInput = document.getElementById('nome');
-const matriculaInput = document.getElementById('matricula');
-const emailInput = document.getElementById('email');
-const nomeError = document.getElementById('nomeError');
-const matriculaError = document.getElementById('matriculaError');
-const emailError = document.getElementById('emailError');
+        let courses = {};
+        let selectedCourses = [];
+        let selectedDisciplines = {};  // Armazena disciplinas selecionadas por curso
 
-const courses = {
-    'curso1': { name: 'Curso 1 - Engenharia', disciplines: ['Cálculo I', 'Física Geral'] },
-    'curso2': { name: 'Curso 2 - Informática', disciplines: ['Algoritmos', 'Estruturas de Dados'] },
-    'curso3': { name: 'Curso 3 - Matemática', disciplines: ['Álgebra Linear', 'Geometria Analítica'] }
-};
+        // Carregar os cursos a partir de um arquivo JSON
+        fetch('cursos.json')
+            .then(response => response.json())
+            .then(data => {
+                courses = data;
+                populateCourseSelect();
+            })
+            .catch(error => console.error('Erro ao carregar os cursos:', error));
 
-let selectedCourses = [];
+        function populateCourseSelect() {
+            Object.keys(courses).forEach(courseKey => {
+                const option = document.createElement('option');
+                option.value = courseKey;
+                option.textContent = courses[courseKey].name;
+                cursoSelect.appendChild(option);
+            });
+        }
 
-// Expressões regulares para validação
-const nomeRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+(?: [A-Za-zÀ-ÖØ-öø-ÿ]+)*$/;
-const matriculaRegex = /^[A-Za-z0-9]{7}$/;
-const emailRegex = /^[a-zA-Z0-9._%+-]+@(unisuam\.edu\.br|souunisuam\.com\.br)$/;
+        cursoSelect.addEventListener('change', function () {
+            const selectedValue = cursoSelect.value;
 
-// Alternar modo escuro e claro e armazenar preferência
-toggleDarkMode.addEventListener('click', function() {
-    const isDarkMode = body.classList.toggle('dark-mode');
-    toggleDarkMode.textContent = isDarkMode ? '☀️' : '🌙';
-    localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
-});
+            if (selectedCourses.includes(selectedValue)) {
+                alert('Este curso já foi selecionado.');
+                return;
+            }
 
-// Carregar a preferência de modo escuro ao iniciar a página
-window.onload = function() {
-    const darkModePreference = localStorage.getItem('darkMode');
-    if (darkModePreference === 'enabled') {
-        body.classList.add('dark-mode');
-        toggleDarkMode.textContent = '☀️';
-    }
-};
-
-cursoSelect.addEventListener('change', function () {
-    const selectedValue = cursoSelect.value;
-
-    // Verifica se o curso já foi selecionado
-    if (selectedCourses.includes(selectedValue)) {
-        alert('Este curso já foi selecionado.');
-        return;
-    }
-
-    // Adiciona o curso à lista de selecionados
-    selectedCourses.push(selectedValue);
-    updateSelectedCourses();
-    updateDisciplineList();
-});
-
-// Validação dos campos de nome, matrícula e e-mail sem envio
-courseForm.addEventListener('submit', function(event) {
-    event.preventDefault(); // Impedir o envio padrão do formulário
-
-    let isValid = true;
-
-    // Validação do campo nome
-    if (!nomeRegex.test(nomeInput.value)) {
-        nomeError.style.display = 'block';
-        isValid = false;
-    } else {
-        nomeError.style.display = 'none';
-    }
-
-    // Validação do campo matrícula
-    if (!matriculaRegex.test(matriculaInput.value)) {
-        matriculaError.style.display = 'block';
-        isValid = false;
-    } else {
-        matriculaError.style.display = 'none';
-    }
-
-    // Validação do campo e-mail
-    if (!emailRegex.test(emailInput.value)) {
-        emailError.style.display = 'block';
-        isValid = false;
-    } else {
-        emailError.style.display = 'none';
-    }
-
-    // Se os dados forem válidos, pode-se adicionar alguma lógica extra aqui, como exibir uma mensagem
-    if (isValid) {
-        alert('Dados válidos! Agora você pode prosseguir com o próximo passo.');
-        // Você pode adicionar uma ação aqui caso necessário, como salvar localmente ou outro comportamento
-    }
-});
-
-function updateSelectedCourses() {
-    selectedCoursesDiv.innerHTML = '';
-    selectedCourses.forEach(course => {
-        const courseTag = document.createElement('div');
-        courseTag.classList.add('course-tag');
-        courseTag.innerHTML = `${courses[course].name} <span onclick="removeCourse('${course}')">x</span>`;
-        selectedCoursesDiv.appendChild(courseTag);
-    });
-}
-
-function removeCourse(course) {
-    selectedCourses = selectedCourses.filter(c => c !== course);
-    updateSelectedCourses();
-    updateDisciplineList();
-}
-
-function updateDisciplineList() {
-    disciplineListDiv.innerHTML = '';
-    selectedCourses.forEach(course => {
-        const courseTitle = document.createElement('h3');
-        courseTitle.textContent = courses[course].name;
-
-        const checkboxGroup = document.createElement('div');
-        checkboxGroup.classList.add('checkbox-group');
-
-        courses[course].disciplines.forEach(discipline => {
-            const label = document.createElement('label');
-            label.innerHTML = `<input type="checkbox" name="disciplinas[]" value="${discipline}"> ${discipline}`;
-            checkboxGroup.appendChild(label);
+            selectedCourses.push(selectedValue);
+            updateSelectedCourses();
+            updateDisciplineList();
         });
 
-        disciplineListDiv.appendChild(courseTitle);
-        disciplineListDiv.appendChild(checkboxGroup);
-    });
-}
-</script>
+        function updateSelectedCourses() {
+            selectedCoursesDiv.innerHTML = '';
+            selectedCourses.forEach(course => {
+                const courseTag = document.createElement('div');
+                courseTag.classList.add('course-tag');
+                courseTag.innerHTML = `${courses[course].name} <span onclick="removeCourse('${course}')">x</span>`;
+                selectedCoursesDiv.appendChild(courseTag);
+            });
+        }
+
+        function removeCourse(course) {
+            selectedCourses = selectedCourses.filter(c => c !== course);
+            updateSelectedCourses();
+            updateDisciplineList();
+        }
+
+        function updateDisciplineList() {
+            disciplineListDiv.innerHTML = '';
+            selectedCourses.forEach(course => {
+                const courseTitle = document.createElement('h3');
+                courseTitle.textContent = courses[course].name;
+
+                const checkboxGroup = document.createElement('div');
+                checkboxGroup.classList.add('checkbox-group');
+
+                courses[course].disciplines.forEach(discipline => {
+                    const isChecked = selectedDisciplines[course] && selectedDisciplines[course].includes(discipline);
+                    const label = document.createElement('label');
+                    label.innerHTML = `<input type="checkbox" name="disciplinas[]" value="${discipline}" ${isChecked ? 'checked' : ''} onchange="toggleDiscipline('${course}', '${discipline}')"> ${discipline}`;
+                    checkboxGroup.appendChild(label);
+                });
+
+                disciplineListDiv.appendChild(courseTitle);
+                disciplineListDiv.appendChild(checkboxGroup);
+            });
+        }
+
+        function toggleDiscipline(course, discipline) {
+            if (!selectedDisciplines[course]) {
+                selectedDisciplines[course] = [];
+            }
+
+            if (selectedDisciplines[course].includes(discipline)) {
+                selectedDisciplines[course] = selectedDisciplines[course].filter(d => d !== discipline);
+            } else {
+                selectedDisciplines[course].push(discipline);
+            }
+        }
+    </script>
 </body>
 </html>
