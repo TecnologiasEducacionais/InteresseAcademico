@@ -240,47 +240,67 @@
     </div>
     <script>
         const cursoSelect = document.getElementById('curso');
-        const selectedCoursesDiv = document.getElementById('selectedCourses');
-        const disciplineListDiv = document.getElementById('disciplineList');
-        const toggleDarkMode = document.getElementById('darkModeToggle');
-        const body = document.body;
+const selectedCoursesDiv = document.getElementById('selectedCourses');
+const disciplineListDiv = document.getElementById('disciplineList');
+const toggleDarkMode = document.getElementById('darkModeToggle');
+const body = document.body;
 
-        let courses = {};
-        let selectedCourses = [];
-        let selectedDisciplines = {};  // Armazena disciplinas selecionadas por curso
+let courses = {};
+let selectedCourses = [];
+let selectedDisciplines = {};  // Armazena disciplinas selecionadas por curso
 
-        // Carregar os cursos a partir de um arquivo JSON
-        fetch('cursos.json')
-            .then(response => response.json())
-            .then(data => {
-                courses = data;
-                populateCourseSelect();
-            })
-            .catch(error => console.error('Erro ao carregar os cursos:', error));
+// Carregar preferência de modo escuro do localStorage
+if (localStorage.getItem('darkMode') === 'enabled') {
+    body.classList.add('dark-mode');
+    toggleDarkMode.textContent = '☀️';  // Ícone de sol para desativar o modo escuro
+} else {
+    toggleDarkMode.textContent = '🌙';  // Ícone de lua para ativar o modo escuro
+}
 
-        function populateCourseSelect() {
-            Object.keys(courses).forEach(courseKey => {
-                const option = document.createElement('option');
-                option.value = courseKey;
-                option.textContent = courses[courseKey].name;
-                cursoSelect.appendChild(option);
-            });
-        }
+// Alternar modo escuro
+toggleDarkMode.addEventListener('click', function() {
+    body.classList.toggle('dark-mode');
+    if (body.classList.contains('dark-mode')) {
+        localStorage.setItem('darkMode', 'enabled');
+        toggleDarkMode.textContent = '☀️';  // Ícone de sol para desativar
+    } else {
+        localStorage.setItem('darkMode', 'disabled');
+        toggleDarkMode.textContent = '🌙';  // Ícone de lua para ativar
+    }
+});
 
-        cursoSelect.addEventListener('change', function () {
-            const selectedValue = cursoSelect.value;
+// Carregar os cursos a partir de um arquivo JSON
+fetch('cursos.json')
+    .then(response => response.json())
+    .then(data => {
+        courses = data;
+        populateCourseSelect();
+    })
+    .catch(error => console.error('Erro ao carregar os cursos:', error));
 
-            if (selectedCourses.includes(selectedValue)) {
-                alert('Este curso já foi selecionado.');
-                return;
-            }
+function populateCourseSelect() {
+    Object.keys(courses).forEach(courseKey => {
+        const option = document.createElement('option');
+        option.value = courseKey;
+        option.textContent = courses[courseKey].name;
+        cursoSelect.appendChild(option);
+    });
+}
 
-            selectedCourses.push(selectedValue);
-            updateSelectedCourses();
-            updateDisciplineList();
-        });
+cursoSelect.addEventListener('change', function () {
+    const selectedValue = cursoSelect.value;
 
-        function updateSelectedCourses() {
+    if (selectedCourses.includes(selectedValue)) {
+        alert('Este curso já foi selecionado.');
+        return;
+    }
+
+    selectedCourses.push(selectedValue);
+    updateSelectedCourses();
+    updateDisciplineList();
+});
+
+function updateSelectedCourses() {
     selectedCoursesDiv.innerHTML = '';
     selectedCourses.forEach((course, index) => {
         const courseNumber = index + 1; // Número dinâmico
@@ -291,13 +311,13 @@
     });
 }
 
-        function removeCourse(course) {
-            selectedCourses = selectedCourses.filter(c => c !== course);
-            updateSelectedCourses();
-            updateDisciplineList();
-        }
+function removeCourse(course) {
+    selectedCourses = selectedCourses.filter(c => c !== course);
+    updateSelectedCourses();
+    updateDisciplineList();
+}
 
-        function updateDisciplineList() {
+function updateDisciplineList() {
     disciplineListDiv.innerHTML = '';
     selectedCourses.forEach((course, index) => {
         const courseNumber = index + 1; // Número dinâmico
@@ -319,18 +339,18 @@
     });
 }
 
+function toggleDiscipline(course, discipline) {
+    if (!selectedDisciplines[course]) {
+        selectedDisciplines[course] = [];
+    }
 
-        function toggleDiscipline(course, discipline) {
-            if (!selectedDisciplines[course]) {
-                selectedDisciplines[course] = [];
-            }
+    if (selectedDisciplines[course].includes(discipline)) {
+        selectedDisciplines[course] = selectedDisciplines[course].filter(d => d !== discipline);
+    } else {
+        selectedDisciplines[course].push(discipline);
+    }
+}
 
-            if (selectedDisciplines[course].includes(discipline)) {
-                selectedDisciplines[course] = selectedDisciplines[course].filter(d => d !== discipline);
-            } else {
-                selectedDisciplines[course].push(discipline);
-            }
-        }
     </script>
 </body>
 </html>
